@@ -1,35 +1,24 @@
 #!/usr/bin/env python3
-"""
-Flask app
-"""
+"""Flask App."""
 import locale
-from flask import (
-    Flask,
-    render_template,
-    request,
-    g
-)
+from flask import Flask, render_template, request, g
 from flask_babel import Babel
 from datetime import timezone as tmzn
 from datetime import datetime
 from pytz import timezone
 import pytz.exceptions
-from typing import (
-    Dict,
-    Union
-)
+from typing import Dict, Union
 
 
 class Config(object):
-    """
-    Configuration for Babel
-    """
+    """Babel Config."""
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
 app = Flask(__name__)
+app.debug = True
 app.config.from_object(Config)
 babel = Babel(app)
 
@@ -43,10 +32,7 @@ users = {
 
 
 def get_user() -> Union[Dict, None]:
-    """
-    Returns a user dictionary or None if ID value can't be found
-    or if 'login_as' URL parameter was not found
-    """
+    """Returns a user dictionary or None..."""
     id = request.args.get('login_as', None)
     if id and int(id) in users.keys():
         return users.get(int(id))
@@ -55,9 +41,7 @@ def get_user() -> Union[Dict, None]:
 
 @app.before_request
 def before_request():
-    """
-    Add user to flask.g if user is found
-    """
+    """Add user to flask.g if user is found."""
     user = get_user()
     g.user = user
     time_now = pytz.utc.localize(datetime.utcnow())
@@ -69,9 +53,7 @@ def before_request():
 
 @babel.localeselector
 def get_locale():
-    """
-    Select and return best language match based on supported languages
-    """
+    """Select and return supported languages."""
     loc = request.args.get('locale')
     if loc in app.config['LANGUAGES']:
         return loc
@@ -87,9 +69,7 @@ def get_locale():
 
 @babel.timezoneselector
 def get_timezone():
-    """
-    Select and return appropriate timezone
-    """
+    """Select and return appropriate timezone."""
     tzone = request.args.get('timezone', None)
     if tzone:
         try:
@@ -108,11 +88,9 @@ def get_timezone():
 
 @app.route('/', strict_slashes=False)
 def index() -> str:
-    """
-    Handles / route
-    """
-    return render_template('5-index.html')
+    """Handles route."""
+    return render_template("5-index.html")
 
 
 if __name__ == "__main__":
-    app.run(port="5000", host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=5000)
