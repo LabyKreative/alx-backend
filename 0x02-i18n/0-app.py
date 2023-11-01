@@ -7,11 +7,9 @@ app = Flask(__name__)
 app.debug = True
 
 
-@app.route('/', strict_slashes=False)
+@app.route("/", strict_slashes=False)
 def index() -> str:
-    """
-    Handles / route
-    """
+    """Handles route."""
     return render_template("0-index.html")
 
 
