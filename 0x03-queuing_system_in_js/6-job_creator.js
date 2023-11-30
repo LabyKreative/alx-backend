@@ -1,4 +1,4 @@
-// A script to create a job notification
+// A script that creates a job notification
 import { createQueue } from 'kue';
 
 const queue = createQueue();
